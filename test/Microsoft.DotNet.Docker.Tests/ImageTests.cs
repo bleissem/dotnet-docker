@@ -30,13 +30,13 @@ namespace Microsoft.DotNet.Docker.Tests
             {
                 new ImageDescriptor {DotNetCoreVersion = "1.0", SdkVersion = "1.1"},
                 new ImageDescriptor {DotNetCoreVersion = "1.1", RuntimeDepsVersion = "1.0"},
-                new ImageDescriptor {DotNetCoreVersion = "2.0"},
             };
 
             if (DockerHelper.IsLinuxContainerModeEnabled)
             {
                 testData.AddRange(new List<ImageDescriptor>
                     {
+                        new ImageDescriptor {DotNetCoreVersion = "2.0"},
                         new ImageDescriptor {DotNetCoreVersion = "2.0", OsVariant = "jessie"},
                         new ImageDescriptor
                         {
@@ -51,7 +51,8 @@ namespace Microsoft.DotNet.Docker.Tests
             {
                 testData.AddRange(new List<ImageDescriptor>
                     {
-                        new ImageDescriptor {DotNetCoreVersion = "2.0", OsVariant = "nanoserver-1709"},
+                        new ImageDescriptor {DotNetCoreVersion = "2.0.0", OsVariant = "2.0.2-nanoserver"},
+                        new ImageDescriptor {DotNetCoreVersion = "2.0.0", OsVariant = "2.0.2-nanoserver-1709"},
                     });
             }
 
@@ -61,12 +62,19 @@ namespace Microsoft.DotNet.Docker.Tests
                 versionFilterPattern = "^" + Regex.Escape(VersionFilter).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
             }
 
+            string osFilterPattern = null;
+            if (OsFilter != null)
+            {
+                osFilterPattern = "^" + Regex.Escape(OsFilter).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
+            }
+
             // Filter out test data that does not match the active architecture and version filters.
             return testData
                 .Where(imageDescriptor => ArchFilter == null
                     || string.Equals(imageDescriptor.Architecture, ArchFilter, StringComparison.OrdinalIgnoreCase))
                 .Where(imageDescriptor => OsFilter == null
-                    || (imageDescriptor.OsVariant?.StartsWith(OsFilter) ?? false))
+                    || (imageDescriptor.OsVariant != null 
+                        && Regex.IsMatch(imageDescriptor.OsVariant, osFilterPattern, RegexOptions.IgnoreCase)))
                 .Where(imageDescriptor => VersionFilter == null
                     || Regex.IsMatch(imageDescriptor.DotNetCoreVersion, versionFilterPattern, RegexOptions.IgnoreCase))
                 .Select(imageDescriptor => new object[] { imageDescriptor });

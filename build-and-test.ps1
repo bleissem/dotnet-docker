@@ -2,7 +2,8 @@
 param(
     [switch]$UseImageCache,
     [string]$Filter,
-    [string]$Architecture
+    [string]$Architecture,
+    [string]$OS    
 )
 
 Set-StrictMode -Version Latest
@@ -51,6 +52,6 @@ $manifestRepo.Images |
             }
     }
 
-./test/run-test.ps1 -Filter $Filter -Architecture $Architecture
+./test/run-test.ps1 -Filter $Filter -Architecture $Architecture -OS $OS
 
 Write-Host "Tags built and tested:`n$($builtTags | Out-String)"
