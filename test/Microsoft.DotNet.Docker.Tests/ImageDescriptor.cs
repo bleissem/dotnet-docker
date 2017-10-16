@@ -8,6 +8,7 @@ namespace Microsoft.DotNet.Docker.Tests
 {
     public class ImageDescriptor
     {
+        private string netCoreAppVersion;
         private string runtimeDepsVersion;
         private string sdkVersion;
         private string sdkOsVariant;
@@ -16,6 +17,12 @@ namespace Microsoft.DotNet.Docker.Tests
         public string DotNetCoreVersion { get; set; }
         public bool IsArm { get => String.Equals("arm", Architecture, StringComparison.OrdinalIgnoreCase); }
         public string OsVariant { get; set; }
+
+        public string NetCoreAppVersion
+        {
+            get { return netCoreAppVersion ?? DotNetCoreVersion; }
+            set { netCoreAppVersion = value; }
+        }
 
         public string RuntimeDepsVersion
         {

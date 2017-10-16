@@ -51,8 +51,14 @@ namespace Microsoft.DotNet.Docker.Tests
             {
                 testData.AddRange(new List<ImageDescriptor>
                     {
-                        new ImageDescriptor {DotNetCoreVersion = "2.0.0", OsVariant = "2.0.2-nanoserver"},
-                        new ImageDescriptor {DotNetCoreVersion = "2.0.0", OsVariant = "2.0.2-nanoserver-1709"},
+                        new ImageDescriptor {
+                            DotNetCoreVersion = "2.0.0", 
+                            OsVariant = "2.0.2-nanoserver", 
+                            NetCoreAppVersion = "2.0"},
+                        new ImageDescriptor {
+                            DotNetCoreVersion = "2.0.0", 
+                            OsVariant = "2.0.2-nanoserver-1709", 
+                            NetCoreAppVersion = "2.0"},
                     });
             }
 
@@ -112,7 +118,7 @@ namespace Microsoft.DotNet.Docker.Tests
         {
             // dotnet new, restore, build a new app using the sdk image
             List<string> buildArgs = new List<string>();
-            buildArgs.Add($"netcoreapp_version={imageDescriptor.DotNetCoreVersion}");
+            buildArgs.Add($"netcoreapp_version={imageDescriptor.NetCoreAppVersion}");
             if (!imageDescriptor.SdkVersion.StartsWith("1."))
             {
                 buildArgs.Add($"optional_new_args=--no-restore");
